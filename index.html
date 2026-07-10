@@ -3,37 +3,53 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SQL 30 天互动教程 · MVP</title>
+  <title>SQL 30 天互动教程</title>
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
-  <div id="loading" class="loading-overlay">
+  <div id="language-gate" class="language-gate">
+    <div class="language-card">
+      <p class="eyebrow">SQL Learning Course</p>
+      <h1>Choose your learning language</h1>
+      <p>Pick a language before the course starts. You can switch again any time from the header.</p>
+      <div class="language-actions">
+        <button class="btn btn-primary" data-lang="en">English</button>
+        <button class="btn btn-primary" data-lang="zh">中文</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="loading" class="loading-overlay hidden">
     <div class="spinner"></div>
     <p style="margin-top:1rem;color:#8b9cb3">正在加载 SQL 引擎与课程数据…</p>
   </div>
 
   <header class="app-header">
     <div>
-      <h1>SQL 30 天互动教程</h1>
-      <p class="subtitle">基于 Practical SQL · Pocket Guide · SQL Cookbook · Head First SQL 课纲 · 本地运行</p>
+      <h1 id="app-title">SQL 30 天互动教程</h1>
+      <p class="subtitle" id="app-subtitle">本地运行的双语 SQL 学习网页</p>
     </div>
     <div class="header-stats">
-      <span class="stat-pill">进度 <strong id="stat-progress">0/30</strong></span>
-      <span class="stat-pill">连续 <strong id="stat-streak">0</strong> 天</span>
-      <span class="stat-pill">错题 <strong id="stat-wrong">0</strong></span>
+      <span class="stat-pill"><span data-stat-label="progress">进度</span> <strong id="stat-progress">0/30</strong></span>
+      <span class="stat-pill"><span data-stat-label="streak">连续</span> <strong id="stat-streak">0</strong> <span data-stat-label="days">天</span></span>
+      <span class="stat-pill"><span data-stat-label="wrong">错题</span> <strong id="stat-wrong">0</strong></span>
       <span class="round-badge" id="stat-round">第 1 轮</span>
+    </div>
+    <div class="language-switcher" aria-label="Language">
+      <button class="btn btn-secondary btn-sm" data-header-lang="en">EN</button>
+      <button class="btn btn-secondary btn-sm" data-header-lang="zh">中文</button>
     </div>
     <button class="btn btn-secondary btn-sm mobile-nav-toggle" id="toggle-sidebar">☰ 日历</button>
   </header>
 
   <div class="layout">
     <aside class="sidebar" id="sidebar">
-      <h2>学习日历 Day 1–30</h2>
+      <h2 id="sidebar-title">学习日历 Day 1–30</h2>
       <div class="day-grid" id="day-grid"></div>
       <div class="nav-actions">
-        <button class="btn btn-secondary btn-sm" id="btn-wrong-book">📕 错题本</button>
-        <button class="btn btn-secondary btn-sm" id="btn-report">📊 学习报告</button>
-        <button class="btn btn-secondary btn-sm" id="btn-round2">🔀 开始第 2 轮（打乱顺序）</button>
+        <button class="btn btn-secondary btn-sm" id="btn-wrong-book">错题本</button>
+        <button class="btn btn-secondary btn-sm" id="btn-report">学习报告</button>
+        <button class="btn btn-secondary btn-sm" id="btn-round2">开始第 2 轮（打乱顺序）</button>
         <button class="btn btn-secondary btn-sm" id="btn-reset">↺ 重置进度</button>
       </div>
     </aside>
@@ -46,7 +62,7 @@
         <div id="lesson-panels"></div>
         <div class="panel open" id="exercise-panel">
           <div class="panel-header" data-panel="exercises">
-            <h3>每日练习（3 套 · 每套 6 题）</h3>
+            <h3 id="exercise-title">每日练习（3 套 · 每套 6 题）</h3>
             <span class="chevron">▼</span>
           </div>
           <div class="panel-body" style="display:block">
@@ -54,7 +70,10 @@
             <div id="questions-container"></div>
             <div class="score-bar" id="score-bar" style="display:none">
               <span id="score-text"></span>
-              <button class="btn btn-success btn-sm" id="btn-submit-set">提交本套并打分</button>
+              <div class="score-actions">
+                <button class="btn btn-secondary btn-sm" id="btn-reset-set">重置本套</button>
+                <button class="btn btn-success btn-sm" id="btn-submit-set">提交本套并打分</button>
+              </div>
             </div>
           </div>
         </div>
@@ -63,15 +82,15 @@
 
       <!-- Wrong book view -->
       <div id="view-wrong" class="view-hidden">
-        <h2 style="margin-bottom:1rem">错题本</h2>
-        <p style="color:var(--muted);margin-bottom:1rem;font-size:0.9rem">做错的题目会自动收录。标记「已掌握」后移出活跃列表。</p>
+        <h2 id="wrong-title" style="margin-bottom:1rem">错题本</h2>
+        <p id="wrong-help" style="color:var(--muted);margin-bottom:1rem;font-size:0.9rem">做错的题目会自动收录。标记「已掌握」后移出活跃列表。</p>
         <ul class="wrong-book-list panel" id="wrong-list"></ul>
         <button class="btn btn-secondary" id="btn-back-from-wrong">← 返回学习</button>
       </div>
 
       <!-- Report view -->
       <div id="view-report" class="view-hidden">
-        <h2 style="margin-bottom:1rem">学习报告</h2>
+        <h2 id="report-title" style="margin-bottom:1rem">学习报告</h2>
         <pre id="report-json" style="background:#0a0e14;padding:1rem;border-radius:8px;overflow:auto;font-size:0.8rem;max-height:60vh"></pre>
         <button class="btn btn-secondary" id="btn-back-from-report">← 返回学习</button>
       </div>

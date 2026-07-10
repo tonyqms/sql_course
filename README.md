@@ -1,6 +1,6 @@
-# SQL 30 天互动教程 · MVP
+# SQL 30 天互动教程
 
-本地运行的 30 天 SQL 学习网页：课文、每日 3 套练习、阶段 Quiz、期中/期末、错题本、进度追踪。
+本地运行的 30 天双语 SQL 学习网页：English / 中文语言选择、结构化课文、概念级折叠、每日目录、每日 3 套练习、阶段 Quiz、期中/期末、错题本、进度追踪。
 
 ## 教材参考（请自行使用本地 PDF）
 
@@ -9,7 +9,7 @@
 - *SQL Cookbook* — Anthony Molinaro
 - *Head First SQL* — Lynn Beighley
 
-课程内容为本工具**原创摘要与练习题**，不复制教材原文。请结合 `Downloads/book` 目录下的 PDF 对照学习。
+课程内容为本工具**原创学习材料与练习题**，不复制教材原文。教材仅作为参考阅读方向；网页中的概念、例子和自检问题围绕本仓库内置练习数据库编写。
 
 ## 如何打开
 
@@ -37,8 +37,11 @@ npx --yes serve c:\Users\MingshengQi\Downloads\sql-learning-mvp -p 8080
 ## 功能清单
 
 | 功能 | 状态 |
-|------|------|
-| Day 1–30 课文（可折叠） | ✅ |
+| ---- | ---- |
+| English / 中文启动语言选择 | ✅ |
+| Day 1–30 双语结构化课文 | ✅ |
+| 每日目录（概念锚点导航） | ✅ |
+| 概念级折叠/展开 | ✅ |
 | 每日 3 套题（3 选择 + 3 SQL） | ✅ |
 | 自动打分（SQL 按结果集比对） | ✅ |
 | Day 5/10/15/20/25 Quiz | ✅ |
@@ -52,7 +55,7 @@ npx --yes serve c:\Users\MingshengQi\Downloads\sql-learning-mvp -p 8080
 
 ## 项目结构
 
-```
+```text
 sql-learning-mvp/
 ├── index.html          # 入口
 ├── css/styles.css
