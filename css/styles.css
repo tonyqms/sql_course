@@ -418,6 +418,18 @@ body {
 
 .question-card .q-text { margin: 0.5rem 0 0.75rem; font-weight: 500; }
 
+.output-contract {
+  margin: -0.25rem 0 0.75rem;
+  padding: 0.55rem 0.7rem;
+  border: 1px dashed var(--accent);
+  border-radius: 8px;
+  background: rgba(59, 130, 246, 0.08);
+  color: var(--text);
+  font-size: 0.85rem;
+}
+
+.output-contract strong { color: var(--accent); }
+
 .mcq-options { display: flex; flex-direction: column; gap: 0.4rem; }
 
 .mcq-option {

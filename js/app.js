@@ -1,9 +1,9 @@
-import { initDatabase, cloneFreshDb } from './schema.js?v=3';
-import { loadProgress, saveProgress, getDayProgress, recordSetScore, recordQuiz, recordExam, getStats, resetProgress, startRound2, exportReport, markWrongMastered, addWrong } from './progress.js?v=3';
-import { buildRound2Order } from './dag.js?v=3';
-import { gradeSet, runQuery } from './grader.js?v=3';
-import { LESSONS } from '../data/lessons.js?v=3';
-import { getDailySet, getQuiz, getMidterm, getFinal } from '../data/questions.js?v=3';
+import { initDatabase, cloneFreshDb } from './schema.js?v=5';
+import { loadProgress, saveProgress, getDayProgress, recordSetScore, recordQuiz, recordExam, getStats, resetProgress, startRound2, exportReport, markWrongMastered, addWrong } from './progress.js?v=5';
+import { buildRound2Order } from './dag.js?v=5';
+import { gradeSet, runQuery, formatOutputContract } from './grader.js?v=5';
+import { LESSONS } from '../data/lessons.js?v=5';
+import { getDailySet, getQuiz, getMidterm, getFinal } from '../data/questions.js?v=5';
 
 let SQL = null;
 let templateDb = null;
@@ -64,6 +64,7 @@ const UI = {
     yourAnswer: 'Your answer',
     correctAnswer: 'Correct answer',
     notAnswered: 'Not answered',
+    outputContract: 'Output requirement',
     passed: 'Passed',
     reviewAgain: 'Review and try again',
     wrongBookTitle: 'Wrong Book',
@@ -125,6 +126,7 @@ const UI = {
     yourAnswer: '你的答案',
     correctAnswer: '正确答案',
     notAnswered: '未作答',
+    outputContract: '输出要求',
     passed: '通过',
     reviewAgain: '建议复习后再考',
     wrongBookTitle: '错题本',
@@ -454,6 +456,7 @@ function loadQuestionSet(day, setId) {
       card.innerHTML = `
         <div class="q-num"><span class="tag tag-sql">${t('sql')}</span> ${t('question')} ${i + 1} · ${q.topic}</div>
         <div class="q-text">${escapeHtml(q.question)}</div>
+        ${renderOutputContract(q)}
         <textarea class="sql-editor" id="sql-${i}" placeholder="${t('editorPlaceholder')}"></textarea>
         <button class="btn btn-secondary btn-sm" style="margin-top:0.5rem" onclick="runPreview(${i})">▶ ${t('preview')}</button>
         <div class="feedback" id="fb-${i}"></div>
@@ -657,6 +660,7 @@ function renderQuestionInto(container, q, i, answers, prefix) {
     card.innerHTML = `
       <div class="q-num"><span class="tag tag-sql">${t('sql')}</span> ${i + 1}. ${q.topic}</div>
       <div class="q-text">${escapeHtml(q.question)}</div>
+      ${renderOutputContract(q)}
       <textarea class="sql-editor" id="${prefix}-sql-${i}" placeholder="${t('editorPlaceholder')}"></textarea>
       <div class="feedback" id="${prefix}-fb-${i}"></div>`;
   }
@@ -777,6 +781,21 @@ function formatRichText(value) {
   return escapeHtml(localize(value))
     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
     .replace(/`([^`]+)`/g, '<code>$1</code>');
+}
+
+function renderOutputContract(q) {
+  if (q.type !== 'sql' || q.validateBy === 'contains') return '';
+  const expectedSql = q.expectedSql || q.answerSql || '';
+  if (!/^\s*(WITH|SELECT)\b/i.test(expectedSql)) return '';
+  const raw = formatOutputContract(expectedSql, q.columnMode || 'exact');
+  if (!raw) return '';
+  let detail = raw.replace(/^输出要求：/, '');
+  if (currentLanguage === 'en') {
+    detail = detail
+      .replace(/^只返回列/, 'return only columns')
+      .replace(/^至少包含列/, 'include at least columns');
+  }
+  return `<div class="output-contract"><strong>${t('outputContract')}:</strong> ${escapeHtml(detail)}</div>`;
 }
 
 function escapeHtml(s) {
